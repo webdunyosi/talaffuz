@@ -83,14 +83,17 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     recognition.maxAlternatives = 10;
 
     let recognitionTimeout;
+    let timeoutOccurred = false;
 
     recognition.onstart = () => {
         isListening = true;
         recordBtn.classList.add('recording');
         statusText.textContent = '🎤 Tinglayapman... Harfni ayting!';
+        timeoutOccurred = false;
         
         recognitionTimeout = setTimeout(() => {
             console.log('Recognition timeout - stopping');
+            timeoutOccurred = true;
             recognition.stop();
         }, 5000);
     };
@@ -106,18 +109,26 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     };
 
     recognition.onresult = (event) => {
-        clearTimeout(recognitionTimeout);
-        console.log('Recognition results:', event.results);
+        const last = event.results.length - 1;
+        const result = event.results[last];
+        const isFinal = result.isFinal;
+        
+        console.log('Recognition results:', event.results, 'isFinal:', isFinal);
         
         let allTranscripts = [];
-        for (let i = 0; i < event.results[0].length; i++) {
-            allTranscripts.push(event.results[0][i].transcript);
-            console.log(`Alternative ${i}: ${event.results[0][i].transcript} (${event.results[0][i].confidence})`);
+        for (let i = 0; i < result.length; i++) {
+            allTranscripts.push(result[i].transcript);
+            console.log(`Alternative ${i}: ${result[i].transcript} (${result[i].confidence})`);
         }
         
-        const transcript = event.results[0][0].transcript.trim().toLowerCase();
-        console.log('Primary heard:', transcript);
-        checkPronunciation(transcript, allTranscripts);
+        const transcript = result[0].transcript.trim().toLowerCase();
+        console.log('Primary heard:', transcript, 'isFinal:', isFinal);
+        
+        if (transcript.length > 0) {
+            clearTimeout(recognitionTimeout);
+            recognition.stop();
+            checkPronunciation(transcript, allTranscripts);
+        }
     };
 
     recognition.onerror = (event) => {
@@ -138,7 +149,15 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         clearTimeout(recognitionTimeout);
         recordBtn.classList.remove('recording');
         isListening = false;
-        console.log('Recognition ended');
+        console.log('Recognition ended, timeout occurred:', timeoutOccurred);
+        
+        if (timeoutOccurred) {
+            resultBox.className = 'result-box result-wrong';
+            resultContent.innerHTML = `❌ Vaqt tugadi!<br>Siz hech narsa demaganingiz yoki juda sekin gapirdingiz`;
+            resultBox.style.display = 'block';
+            statusText.textContent = `Qayta urinib ko'ring! "${selectedLetter}" harfini aytishingiz kerak.`;
+            timeoutOccurred = false;
+        }
     };
 } else {
     recordBtn.disabled = true;
