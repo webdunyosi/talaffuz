@@ -12,7 +12,16 @@ const letterToSound = {
     'O\'': 'ў', 'G\'': 'ға', 'Sh': 'ша', 'Ch': 'ча', 'Ng': 'нг'
 };
 
+const letterToAudioFile = {
+    'A': 'A.mp3', 'B': 'B.mp3', 'D': 'D.mp3', 'E': 'E.mp3', 'F': 'F.mp3', 'G': 'G.mp3',
+    'H': 'H.mp3', 'I': 'I.mp3', 'J': 'J.mp3', 'K': 'K.mp3', 'L': 'L.mp3', 'M': 'M.mp3',
+    'N': 'N.mp3', 'O': 'O.mp3', 'P': 'P.mp3', 'Q': 'Q.mp3', 'R': 'R.mp3', 'S': 'S.mp3',
+    'T': 'T.mp3', 'U': 'U.mp3', 'V': 'V.mp3', 'X': 'X.mp3', 'Y': 'Y.mp3', 'Z': 'Z.mp3',
+    'O\'': 'O.mp3', 'G\'': 'G.mp3', 'Sh': 'Sh.mp3', 'Ch': 'Ch.mp3', 'Ng': 'Ng.mp3'
+};
+
 let selectedLetter = null;
+let currentAudio = null;
 let recognition = null;
 let isListening = false;
 
@@ -44,34 +53,59 @@ function selectLetter(letter, btnElement) {
 listenBtn.onclick = () => {
     if (!selectedLetter) return;
     
-    window.speechSynthesis.cancel();
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
     
-    const utterance = new SpeechSynthesisUtterance(letterToSound[selectedLetter]);
-    utterance.lang = 'ru-RU';
-    utterance.rate = 0.5;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+    const audioFileName = letterToAudioFile[selectedLetter];
+    currentAudio = new Audio(`audio/${audioFileName}`);
     
-    utterance.onstart = () => {
-        statusText.textContent = `🔊 "${selectedLetter}" harfini eshiting...`;
-        listenBtn.disabled = true;
+    statusText.textContent = `🔊 "${selectedLetter}" harfini eshiting...`;
+    listenBtn.disabled = true;
+    
+    currentAudio.onloadeddata = () => {
+        console.log('Audio loaded successfully');
     };
     
-    utterance.onend = () => {
+    currentAudio.onplay = () => {
+        console.log('Audio playing');
+    };
+    
+    currentAudio.onended = () => {
         statusText.textContent = `Endi siz "${selectedLetter}" harfini aytib ko'ring!`;
         listenBtn.disabled = false;
         recordBtn.disabled = false;
+        console.log('Audio ended');
     };
     
-    utterance.onerror = (e) => {
-        console.error('Speech synthesis error:', e);
+    currentAudio.onerror = (e) => {
+        console.error('Audio error:', e);
+        statusText.textContent = `⚠️ "${selectedLetter}" uchun audio fayl topilmadi. Speech synthesis ishlatilmoqda...`;
+        
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(letterToSound[selectedLetter]);
+        utterance.lang = 'ru-RU';
+        utterance.rate = 0.5;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        
+        utterance.onend = () => {
+            statusText.textContent = `Endi siz "${selectedLetter}" harfini aytib ko'ring!`;
+            listenBtn.disabled = false;
+            recordBtn.disabled = false;
+        };
+        
+        setTimeout(() => {
+            window.speechSynthesis.speak(utterance);
+        }, 100);
+    };
+    
+    currentAudio.play().catch(err => {
+        console.error('Play error:', err);
         statusText.textContent = '❌ Ovoz xatosi! Qaytadan bosing.';
         listenBtn.disabled = false;
-    };
-    
-    setTimeout(() => {
-        window.speechSynthesis.speak(utterance);
-    }, 100);
+    });
 };
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
