@@ -5,11 +5,11 @@ const uzbekLetters = [
 ];
 
 const letterToSound = {
-    'A': 'а', 'B': 'бе', 'D': 'де', 'E': 'е', 'F': 'эф', 'G': 'ге',
-    'H': 'ҳа', 'I': 'и', 'J': 'жи', 'K': 'ка', 'L': 'эл', 'M': 'эм',
-    'N': 'эн', 'O': 'о', 'P': 'пе', 'Q': 'қа', 'R': 'эр', 'S': 'эс',
-    'T': 'те', 'U': 'у', 'V': 'ве', 'X': 'ха', 'Y': 'йе', 'Z': 'зе',
-    'O\'': 'ў', 'G\'': 'ғ', 'Sh': 'ша', 'Ch': 'че', 'Ng': 'нг'
+    'A': 'а', 'B': 'бэ', 'D': 'дэ', 'E': 'э', 'F': 'эф', 'G': 'гэ',
+    'H': 'ха', 'I': 'и', 'J': 'жи', 'K': 'ка', 'L': 'эл', 'M': 'эм',
+    'N': 'эн', 'O': 'о', 'P': 'пэ', 'Q': 'ка', 'R': 'эр', 'S': 'эс',
+    'T': 'тэ', 'U': 'у', 'V': 'вэ', 'X': 'ха', 'Y': 'йэ', 'Z': 'зэ',
+    'O\'': 'ў', 'G\'': 'ға', 'Sh': 'ша', 'Ch': 'ча', 'Ng': 'нг'
 };
 
 let selectedLetter = null;
@@ -48,8 +48,8 @@ listenBtn.onclick = () => {
     
     const utterance = new SpeechSynthesisUtterance(letterToSound[selectedLetter]);
     utterance.lang = 'ru-RU';
-    utterance.rate = 0.6;
-    utterance.pitch = 1.1;
+    utterance.rate = 0.5;
+    utterance.pitch = 1.0;
     utterance.volume = 1.0;
     
     utterance.onstart = () => {
