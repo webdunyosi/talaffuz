@@ -135,6 +135,12 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     recognition.onspeechstart = () => {
         console.log('Speech detected!');
         statusText.textContent = '🎤 Eshitilyapti...';
+        clearTimeout(recognitionTimeout);
+        recognitionTimeout = setTimeout(() => {
+            console.log('Speech timeout - stopping after speech started');
+            timeoutOccurred = true;
+            recognition.stop();
+        }, 3000);
     };
 
     recognition.onspeechend = () => {
@@ -143,6 +149,8 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     };
 
     recognition.onresult = (event) => {
+        clearTimeout(recognitionTimeout);
+        
         const last = event.results.length - 1;
         const result = event.results[last];
         const isFinal = result.isFinal;
@@ -159,9 +167,12 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         console.log('Primary heard:', transcript, 'isFinal:', isFinal);
         
         if (transcript.length > 0) {
-            clearTimeout(recognitionTimeout);
             timeoutOccurred = false;
-            recognition.stop();
+            try {
+                recognition.stop();
+            } catch (e) {
+                console.log('Already stopped');
+            }
             statusText.textContent = '🔍 Tekshirilmoqda...';
             setTimeout(() => {
                 checkPronunciation(transcript, allTranscripts);
