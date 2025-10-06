@@ -126,8 +126,12 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         
         if (transcript.length > 0) {
             clearTimeout(recognitionTimeout);
+            timeoutOccurred = false;
             recognition.stop();
-            checkPronunciation(transcript, allTranscripts);
+            statusText.textContent = '🔍 Tekshirilmoqda...';
+            setTimeout(() => {
+                checkPronunciation(transcript, allTranscripts);
+            }, 100);
         }
     };
 
