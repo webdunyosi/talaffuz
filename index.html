@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harf Talaffuz O'rgatuvchi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Harflarni O'rganamiz!</h1>
+        
+        <div class="status-box" id="statusBox">
+            <p id="statusText">Harfni tanlang va eshiting!</p>
+        </div>
+
+        <div class="letters-grid" id="lettersGrid"></div>
+
+        <div class="control-buttons">
+            <button id="listenBtn" class="btn btn-listen" disabled>
+                🎧 Eshitish
+            </button>
+            <button id="recordBtn" class="btn btn-record" disabled>
+                🎤 Takrorlash
+            </button>
+        </div>
+
+        <div class="result-box" id="resultBox" style="display: none;">
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
