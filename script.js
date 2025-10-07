@@ -11,7 +11,7 @@ const letterToSound = {
     'T': 'тэ', 'U': 'у', 'V': 'вэ', 'X': 'ха', 'Y': 'йэ', 'Z': 'зэ',
     'O\'': 'ў', 'G\'': 'ға', 'Sh': 'ша', 'Ch': 'ча', 'Ng': 'нг'
 };
-
+https://youtu.be/FNMCAvLHsGI?si=FGJ8IW8SoBnp7GFp
 const letterToAudioFile = {
     'A': 'A.mp3', 'B': 'B.mp3', 'D': 'D.mp3', 'E': 'E.mp3', 'F': 'F.mp3', 'G': 'G.mp3',
     'H': 'H.mp3', 'I': 'I.mp3', 'J': 'J.mp3', 'K': 'K.mp3', 'L': 'L.mp3', 'M': 'M.mp3',
